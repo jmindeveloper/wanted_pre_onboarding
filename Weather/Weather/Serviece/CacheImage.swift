@@ -15,7 +15,7 @@ final class CacheImage {
     var cache = [String: Data]()
     
     func imageCaching(with image: UIImage, url key: String) {
-        if let imageData = image.pngData(), cache[key] != nil {
+        if let imageData = image.pngData(), cache[key] == nil {
             cache[key] = imageData
         }
     }   

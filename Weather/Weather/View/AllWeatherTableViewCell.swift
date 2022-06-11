@@ -14,4 +14,15 @@ final class AllWeatherTableViewCell: UITableViewCell {
     @IBOutlet weak var weatherIconImageView: UIImageView!
     @IBOutlet weak var cityNameLabel: UILabel!
     @IBOutlet weak var currentWeatherLabel: UILabel!
+    
+    // MARK: - Method
+    func configure(with model: CityWeatherInfoModel) {
+        cityNameLabel.text = model.name
+        currentWeatherLabel.text = String(model.weatherInfo.main.temp)
+        weatherIconImageView.loadImage(index: model.weatherInfo.weather.first!.icon)
+    }
+    
+    override func prepareForReuse() {
+        weatherIconImageView.image = nil
+    }
 }

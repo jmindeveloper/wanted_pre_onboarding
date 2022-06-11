@@ -12,6 +12,7 @@ class AllWeatherViewController: UIViewController {
 
     // MARK: - Outlet
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var indicator: UIActivityIndicatorView!
     
     // MARK: - Properties
     private var subscriptions = Set<AnyCancellable>()
@@ -25,6 +26,8 @@ class AllWeatherViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = 85
+        tableView.isHidden = true
+        indicator.startAnimating()
         
         configureCombine()
         
@@ -37,6 +40,9 @@ class AllWeatherViewController: UIViewController {
         viewModel.fetchSuccess
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
+                self?.indicator.stopAnimating()
+                self?.indicator.isHidden = true
+                self?.tableView.isHidden = false
                 self?.tableView.reloadData()
                 print("tableView.reloadData")
             }.store(in: &subscriptions)
@@ -46,11 +52,14 @@ class AllWeatherViewController: UIViewController {
 // MARK: - UITableViewDatSource
 extension AllWeatherViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return viewModel.cityWeatherInfos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: AllWeatherTableViewCell.identifier, for: indexPath) as? AllWeatherTableViewCell else { return UITableViewCell() }
+        
+        let weatherInfoModel = viewModel.cityWeatherInfos[indexPath.row]
+        cell.configure(with: weatherInfoModel)
         
         return cell
     }
