@@ -10,6 +10,10 @@ import Combine
 
 typealias Coordinates = (lat: Double, lon: Double)
 
+enum FetchError: Error {
+    case error
+}
+
 final class APICaller {
     static let shared = APICaller()
     private let cityInfoBaseUrl = "http://api.openweathermap.org/geo/1.0/direct?q="
@@ -53,7 +57,6 @@ final class APICaller {
                 .merge(with: fetchCityInformation(with: city))
                 .eraseToAnyPublisher()
         }
-        .eraseToAnyPublisher()
     }
     
     func fetchAllWeatherInformation(cities: [String]) -> AnyPublisher<[CityWeatherInfoModel], Error> {

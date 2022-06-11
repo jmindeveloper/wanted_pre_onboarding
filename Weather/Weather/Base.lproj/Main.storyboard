@@ -103,8 +103,8 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="GaG-WX-zpf">
                                 <rect key="frame" x="101.5" y="249" width="211.5" height="398"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="38B-v7-9cf">
-                                        <rect key="frame" x="72" y="0.0" width="67" height="32.5"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="서울" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="38B-v7-9cf">
+                                        <rect key="frame" x="82" y="0.0" width="47" height="32.5"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="27"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -153,6 +153,14 @@
                             <constraint firstItem="GaG-WX-zpf" firstAttribute="centerX" secondItem="Q4X-w9-t10" secondAttribute="centerX" id="q0y-G4-xaB"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="cityNameLabel" destination="38B-v7-9cf" id="i5c-0C-V6c"/>
+                        <outlet property="currentTempLabel" destination="UVe-wr-sWT" id="3TG-bV-PlZ"/>
+                        <outlet property="otherInfoLabel" destination="v7l-yw-zcc" id="ESY-hO-1NW"/>
+                        <outlet property="tempMinAndMaxLabel" destination="k7r-kr-xjL" id="pWn-iE-OvO"/>
+                        <outlet property="weatherDescriptionLabel" destination="thd-F5-FjN" id="6lj-ax-Oz3"/>
+                        <outlet property="weatherIconImageView" destination="X1o-Kn-wgh" id="LiC-5U-rMx"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xih-yE-Zl5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

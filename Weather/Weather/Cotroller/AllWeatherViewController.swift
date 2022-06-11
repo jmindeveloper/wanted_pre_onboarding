@@ -70,6 +70,9 @@ extension AllWeatherViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let detailVC = storyboard?.instantiateViewController(withIdentifier: WeatherDetailViewController.identifier) as? WeatherDetailViewController else { return }
         
+        let weatherModel = viewModel.cityWeatherInfos[indexPath.row]
+        detailVC.weatherModel = weatherModel
+        
         navigationController?.pushViewController(detailVC, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)
