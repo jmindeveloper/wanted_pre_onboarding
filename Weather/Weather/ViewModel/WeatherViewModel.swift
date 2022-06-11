@@ -23,8 +23,7 @@ final class WeatherViewModel {
         APICaller.shared.fetchAllWeatherInformation(cities: cities)
             .sink { [weak self] c in
                 switch c {
-                case .finished:
-                    print("done")
+                case .finished:   
                     self?.fetchSuccess.send()
                 case .failure(let error):
                     print(error.localizedDescription)
