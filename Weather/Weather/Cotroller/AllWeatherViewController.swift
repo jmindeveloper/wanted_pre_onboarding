@@ -29,9 +29,9 @@ class AllWeatherViewController: UIViewController {
         tableView.isHidden = true
         indicator.startAnimating()
         
-        configureCombine()
+        navigationItem.title = "날씨"
         
-        navigationController?.navigationBar.prefersLargeTitles = true
+        configureCombine()
     }
     
     // MARK: - Method
@@ -67,5 +67,11 @@ extension AllWeatherViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelagate
 extension AllWeatherViewController: UITableViewDelegate {
-
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let detailVC = storyboard?.instantiateViewController(withIdentifier: WeatherDetailViewController.identifier) as? WeatherDetailViewController else { return }
+        
+        navigationController?.pushViewController(detailVC, animated: true)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }

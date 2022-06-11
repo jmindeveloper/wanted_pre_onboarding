@@ -32,7 +32,7 @@ final class APICaller {
     private func fetchCityWeatherInformation(with city: CityInfoEntity) -> AnyPublisher<CityWeatherInfoModel, Error> {
         let coordinates: Coordinates = (city.lat, city.lon)
         let name = city.localNames.ko
-        let urlString = cityWeatherInfoBaseUrl + "lat=\(coordinates.lat)&lon=\(coordinates.lon)&appid=\(apiKey)&lang=kr"
+        let urlString = cityWeatherInfoBaseUrl + "lat=\(coordinates.lat)&lon=\(coordinates.lon)&appid=\(apiKey)&lang=kr&units=metric"
         let url = URL(string: urlString)!
         
         return URLSession.shared.dataTaskPublisher(for: url)

@@ -18,7 +18,7 @@ final class AllWeatherTableViewCell: UITableViewCell {
     // MARK: - Method
     func configure(with model: CityWeatherInfoModel) {
         cityNameLabel.text = model.name
-        currentWeatherLabel.text = String(model.weatherInfo.main.temp)
+        currentWeatherLabel.text = String(model.currentTampAndHumidity)
         weatherIconImageView.loadImage(index: model.weatherInfo.weather.first!.icon)
     }
     

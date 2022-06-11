@@ -10,7 +10,6 @@ import UIKit
 extension UIImageView {
     func loadImage(index: String) {
         let urlString = "http://openweathermap.org/img/wn/\(index)@2x.png"
-        print(urlString)
         if let imageData =  CacheImage.shared.cache[urlString] {
             self.image = UIImage(data: imageData)
         } else {
@@ -20,8 +19,8 @@ extension UIImageView {
                       let image = UIImage(data: data) else { return }
                 DispatchQueue.main.async {
                     self.image = image
+                    CacheImage.shared.imageCaching(with: image, url: urlString)
                 }
-                CacheImage.shared.imageCaching(with: image, url: urlString)
             }
         }
     }

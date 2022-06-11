@@ -55,4 +55,8 @@ struct Wind: Codable {
 struct CityWeatherInfoModel {
     let name: String
     let weatherInfo: CityWeatherInfoEntity
+    
+    var currentTampAndHumidity: String {
+        return "기온: \(weatherInfo.main.temp) / 습도: \(weatherInfo.main.humidity)"
+    }
 }
