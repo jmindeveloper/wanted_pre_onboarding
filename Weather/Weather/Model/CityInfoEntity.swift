@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - UnitConvertElement
-struct CityInfoModel: Codable {
+struct CityInfoEntity: Codable {
     let localNames: LocalNames
     let lat, lon: Double
 
@@ -23,4 +23,4 @@ struct LocalNames: Codable {
     let ko: String
 }
 
-typealias CityInfoFetchResult = [CityInfoModel]
+typealias CityInfoFetchResult = [CityInfoEntity]

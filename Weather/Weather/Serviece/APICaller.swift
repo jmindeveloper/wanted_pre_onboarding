@@ -18,25 +18,55 @@ final class APICaller {
     
     private init() { }
     
-    func fetchCityInformation(with cityName: String) -> AnyPublisher<[CityInfoModel], Error> {
-        
+    private func fetchCityInformation(with cityName: String) -> AnyPublisher<CityInfoEntity, Error> {
         let urlString = cityInfoBaseUrl + "\(cityName)&limit=1&appid=\(apiKey)"
         let url = URL(string: urlString)!
         
         return URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
             .decode(type: CityInfoFetchResult.self, decoder: JSONDecoder())
+            .map { $0.first! }
             .eraseToAnyPublisher()
     }
     
-    func fetchCityWeatherInformation(with coordinates: Coordinates) -> AnyPublisher<CityWeatherInfoModel, Error> {
+    private func fetchCityWeatherInformation(with city: CityInfoEntity) -> AnyPublisher<CityWeatherInfoModel, Error> {
+        let coordinates: Coordinates = (city.lat, city.lon)
+        let name = city.localNames.ko
         let urlString = cityWeatherInfoBaseUrl + "lat=\(coordinates.lat)&lon=\(coordinates.lon)&appid=\(apiKey)&lang=kr"
         let url = URL(string: urlString)!
         
         return URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
-            .decode(type: CityWeatherInfoModel.self, decoder: JSONDecoder())
+            .decode(type: CityWeatherInfoEntity.self, decoder: JSONDecoder())
+            .map {
+                return CityWeatherInfoModel(name: name, weatherInfo: $0)
+            }
             .eraseToAnyPublisher()
     }
-
+    
+    private func fetchAllCityInformation(cities: [String]) -> AnyPublisher<CityInfoEntity, Error> {
+        let initialPublisher = fetchCityInformation(with: cities[0])
+        let remainder = cities.dropFirst()
+        
+        return remainder.reduce(initialPublisher) { combined, city in
+            return combined
+                .merge(with: fetchCityInformation(with: city))
+                .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func fetchAllWeatherInformation(cities: [String]) -> AnyPublisher<[CityWeatherInfoModel], Error> {
+        return fetchAllCityInformation(cities: cities)
+            .flatMap { [weak self] in
+                return self!.fetchCityWeatherInformation(with: $0)
+            }
+            .scan([]) { models, model -> [CityWeatherInfoModel] in
+                return models + [model]
+            }
+            .map { models in
+                models.sorted { $0.name < $1.name }
+            }
+            .eraseToAnyPublisher()
+    }
 }

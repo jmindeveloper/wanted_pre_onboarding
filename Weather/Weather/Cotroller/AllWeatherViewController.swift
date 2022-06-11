@@ -15,6 +15,7 @@ class AllWeatherViewController: UIViewController {
     
     // MARK: - Properties
     private var subscriptions = Set<AnyCancellable>()
+    private let viewModel = WeatherViewModel()
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
@@ -25,22 +26,20 @@ class AllWeatherViewController: UIViewController {
         tableView.delegate = self
         tableView.rowHeight = 85
         
-        APICaller.shared.fetchCityInformation(with: "Seoul")
-            .sink { completion in
-                print(completion)
-            } receiveValue: { model in
-                print(model)
-            }.store(in: &subscriptions)
-        
-        APICaller.shared.fetchCityWeatherInformation(with: (34.9505, 127.4873))
-            .sink { completion in
-                print(completion)
-            } receiveValue: { model in
-                print(model)
-            }.store(in: &subscriptions)
-
+        configureCombine()
         
         navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    // MARK: - Method
+    private func configureCombine() {
+        viewModel.fetchAllCitiesInformation()
+        viewModel.fetchSuccess
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
+                print("tableView.reloadData")
+            }.store(in: &subscriptions)
     }
 }
 
@@ -59,5 +58,5 @@ extension AllWeatherViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelagate
 extension AllWeatherViewController: UITableViewDelegate {
-    
+
 }
