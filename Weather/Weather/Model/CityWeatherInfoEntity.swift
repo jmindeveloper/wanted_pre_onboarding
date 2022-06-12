@@ -69,6 +69,6 @@ struct CityWeatherInfoModel {
     }
     
     var otherInfo: String {
-        return "습도: \(weatherInfo.main.humidity) / 기압: \(weatherInfo.main.pressure), 풍속: \(weatherInfo.wind.speed)"
+        return "습도: \(weatherInfo.main.humidity) / 기압: \(weatherInfo.main.pressure) / 풍속: \(weatherInfo.wind.speed)"
     }
 }

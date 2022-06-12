@@ -10,10 +10,6 @@ import Combine
 
 typealias Coordinates = (lat: Double, lon: Double)
 
-enum FetchError: Error {
-    case error
-}
-
 final class APICaller {
     static let shared = APICaller()
     private let cityInfoBaseUrl = "http://api.openweathermap.org/geo/1.0/direct?q="
@@ -64,9 +60,10 @@ final class APICaller {
             .flatMap { [weak self] in
                 return self!.fetchCityWeatherInformation(with: $0)
             }
-            .scan([]) { models, model -> [CityWeatherInfoModel] in
-                return models + [model]
-            }
+            .collect()
+//            .scan([]) { models, model -> [CityWeatherInfoModel] in
+//                return models + [model]
+//            }
             .map { models in
                 models.sorted { $0.name < $1.name }
             }

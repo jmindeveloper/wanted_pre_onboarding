@@ -24,6 +24,7 @@ final class WeatherDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure(with: weatherModel)
+        navigationItem.title = weatherModel?.name
     }
     
     // MARK: - Method
