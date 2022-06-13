@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class WeatherDetailViewController: UIViewController {
     static let identifier = "WeatherDetailViewController"
@@ -18,6 +19,8 @@ final class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var sensoryTempLabel: UILabel!
     @IBOutlet weak var tempMinAndMaxLabel: UILabel!
     @IBOutlet weak var otherInfoLabel: UILabel!
+    @IBOutlet weak var indicator: UIActivityIndicatorView!
+    @IBOutlet weak var uiStackView: UIStackView!
     
     // MARK: - ViewProperties
     @objc private let refreshButton: UIBarButtonItem = {
@@ -28,13 +31,16 @@ final class WeatherDetailViewController: UIViewController {
     }()
     
     // MARK: - Properties
-    private var weatherModel: CityWeatherInfoModel?
+    var weatherModel: CityWeatherInfoModel?
+    private var subscriptions = Set<AnyCancellable>()
+    private let weatherViewModel = WeatherViewModel()
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configure(with: weatherModel)
         configureNavBar()
+        indicator.isHidden = true
     }
     
     // MARK: - Method
@@ -56,16 +62,27 @@ final class WeatherDetailViewController: UIViewController {
         otherInfoLabel.text = model.otherInfo
     }
     
+    private func refreshMode(isRefresh: Bool) {
+        uiStackView.isHidden = isRefresh ? true : false
+        indicator.isHidden = isRefresh ? false : true
+        if isRefresh {
+            indicator.startAnimating()
+        } else {
+            indicator.stopAnimating()
+        }
+    }
+    
     // MARK: - Selector
     @objc private func refreshWeather(_ sender: UIBarButtonItem) {
         guard let weatherModel = weatherModel else { return }
-
-        APICaller.shared.fetchCityWeatherInformation(with: weatherModel.cityInfo)
-            .sink { _ in
-                
-            } receiveValue: { [weak self] model in
-                self?.weatherModel = model
-            }
-
+        refreshMode(isRefresh: true)
+        weatherViewModel.refreshOneCityWeatherInformation(with: weatherModel.cityInfo)
+        weatherViewModel.fetchOneCityWeatherSuccess
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.weatherModel = self?.weatherViewModel.oneCityWeatherInfo
+                self?.configure(with: self?.weatherModel)
+                self?.refreshMode(isRefresh: false)
+            }.store(in: &subscriptions)
     }
 }

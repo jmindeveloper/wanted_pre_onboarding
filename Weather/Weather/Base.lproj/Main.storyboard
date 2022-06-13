@@ -149,20 +149,27 @@
                                     </label>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="D1I-Ry-Txy">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="FQ4-Ev-VXg"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="D1I-Ry-Txy" firstAttribute="centerX" secondItem="Q4X-w9-t10" secondAttribute="centerX" id="3pR-GB-sGO"/>
                             <constraint firstItem="GaG-WX-zpf" firstAttribute="centerY" secondItem="Q4X-w9-t10" secondAttribute="centerY" id="bPF-WL-ODA"/>
+                            <constraint firstItem="D1I-Ry-Txy" firstAttribute="centerY" secondItem="Q4X-w9-t10" secondAttribute="centerY" id="cMe-Ri-Va6"/>
                             <constraint firstItem="GaG-WX-zpf" firstAttribute="centerX" secondItem="Q4X-w9-t10" secondAttribute="centerX" id="q0y-G4-xaB"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="cityNameLabel" destination="38B-v7-9cf" id="i5c-0C-V6c"/>
                         <outlet property="currentTempLabel" destination="UVe-wr-sWT" id="3TG-bV-PlZ"/>
+                        <outlet property="indicator" destination="D1I-Ry-Txy" id="yNO-pV-p4N"/>
                         <outlet property="otherInfoLabel" destination="v7l-yw-zcc" id="ESY-hO-1NW"/>
                         <outlet property="sensoryTempLabel" destination="xZm-oS-rCU" id="lJb-OR-aSi"/>
                         <outlet property="tempMinAndMaxLabel" destination="k7r-kr-xjL" id="pWn-iE-OvO"/>
+                        <outlet property="uiStackView" destination="GaG-WX-zpf" id="BXE-RQ-nGg"/>
                         <outlet property="weatherDescriptionLabel" destination="thd-F5-FjN" id="6lj-ax-Oz3"/>
                         <outlet property="weatherIconImageView" destination="X1o-Kn-wgh" id="LiC-5U-rMx"/>
                     </connections>

@@ -23,10 +23,7 @@ class AllWeatherViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.rowHeight = 85
-        tableView.isHidden = true
+        configureTableView()
         indicator.startAnimating()
         
         navigationItem.title = "날씨"
@@ -35,17 +32,31 @@ class AllWeatherViewController: UIViewController {
     }
     
     // MARK: - Method
+    private func configureTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = 85
+        tableView.isHidden = true
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self, action: #selector(refreshWeather(_:)), for: .valueChanged)
+    }
+    
     private func configureCombine() {
-        viewModel.fetchAllCitiesInformation()
-        viewModel.fetchSuccess
+        viewModel.fetchAllCityWeatherInformations()
+        viewModel.fetchAllCityWeatherSuccess
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.indicator.stopAnimating()
                 self?.indicator.isHidden = true
                 self?.tableView.isHidden = false
                 self?.tableView.reloadData()
-                print("tableView.reloadData")
+                self?.tableView.refreshControl?.endRefreshing()
             }.store(in: &subscriptions)
+    }
+    
+    // MARK: - Selector
+    @objc private func refreshWeather(_ sender: UIRefreshControl) {
+        configureCombine()
     }
 }
 
