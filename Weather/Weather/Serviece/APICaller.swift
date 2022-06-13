@@ -18,20 +18,24 @@ final class APICaller {
     
     private init() { }
     
-    private func fetchCityInformation(with cityName: String) -> AnyPublisher<CityInfoEntity, Error> {
+    private func fetchCityInformation(with cityName: String) -> AnyPublisher<CityInfoModel, Error> {
         let urlString = cityInfoBaseUrl + "\(cityName)&limit=1&appid=\(apiKey)"
         let url = URL(string: urlString)!
         
         return URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
             .decode(type: CityInfoFetchResult.self, decoder: JSONDecoder())
-            .map { $0.first! }
+            .compactMap { $0.first }
+            .map {
+                let name = $0.localNames.ko
+                let coordinator = ($0.lat, $0.lon)
+                return CityInfoModel(name: name, coordinator: coordinator)
+            }
             .eraseToAnyPublisher()
     }
     
-    private func fetchCityWeatherInformation(with city: CityInfoEntity) -> AnyPublisher<CityWeatherInfoModel, Error> {
-        let coordinates: Coordinates = (city.lat, city.lon)
-        let name = city.localNames.ko
+    func fetchCityWeatherInformation(with city: CityInfoModel) -> AnyPublisher<CityWeatherInfoModel, Error> {
+        let coordinates: Coordinates = city.coordinator
         let urlString = cityWeatherInfoBaseUrl + "lat=\(coordinates.lat)&lon=\(coordinates.lon)&appid=\(apiKey)&lang=kr&units=metric"
         let url = URL(string: urlString)!
         
@@ -39,12 +43,12 @@ final class APICaller {
             .map(\.data)
             .decode(type: CityWeatherInfoEntity.self, decoder: JSONDecoder())
             .map {
-                return CityWeatherInfoModel(name: name, weatherInfo: $0)
+                return CityWeatherInfoModel(cityInfo: city, weatherInfo: $0)
             }
             .eraseToAnyPublisher()
     }
     
-    private func fetchAllCityInformation(cities: [String]) -> AnyPublisher<CityInfoEntity, Error> {
+    private func fetchAllCityInformation(cities: [String]) -> AnyPublisher<CityInfoModel, Error> {
         let initialPublisher = fetchCityInformation(with: cities[0])
         let remainder = cities.dropFirst()
         
@@ -65,7 +69,7 @@ final class APICaller {
 //                return models + [model]
 //            }
             .map { models in
-                models.sorted { $0.name < $1.name }
+                models.sorted { $0.cityInfo.name < $1.cityInfo.name }
             }
             .eraseToAnyPublisher()
     }

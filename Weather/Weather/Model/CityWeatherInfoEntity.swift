@@ -53,7 +53,7 @@ struct Wind: Codable {
 
 // MARK: - Use
 struct CityWeatherInfoModel {
-    let name: String
+    let cityInfo: CityInfoModel
     let weatherInfo: CityWeatherInfoEntity
     
     var currentTampAndHumidity: String {

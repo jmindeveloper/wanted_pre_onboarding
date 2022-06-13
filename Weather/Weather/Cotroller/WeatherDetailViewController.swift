@@ -10,8 +10,6 @@ import UIKit
 final class WeatherDetailViewController: UIViewController {
     static let identifier = "WeatherDetailViewController"
     
-    var weatherModel: CityWeatherInfoModel?
-    
     // MARK: - Outlet
     @IBOutlet weak var cityNameLabel: UILabel!
     @IBOutlet weak var weatherIconImageView: UIImageView!
@@ -21,22 +19,53 @@ final class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var tempMinAndMaxLabel: UILabel!
     @IBOutlet weak var otherInfoLabel: UILabel!
     
+    // MARK: - ViewProperties
+    @objc private let refreshButton: UIBarButtonItem = {
+        let button = UIBarButtonItem()
+        button.image = UIImage(systemName: "arrow.clockwise")
+        
+        return button
+    }()
+    
+    // MARK: - Properties
+    private var weatherModel: CityWeatherInfoModel?
+    
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configure(with: weatherModel)
-        navigationItem.title = weatherModel?.name
+        configureNavBar()
     }
     
     // MARK: - Method
-    func configure(with model: CityWeatherInfoModel?) {
+    private func configureNavBar() {
+        navigationItem.rightBarButtonItem = refreshButton
+        refreshButton.target = self
+        refreshButton.action = #selector(refreshWeather(_:))
+        navigationItem.title = weatherModel?.cityInfo.name
+    }
+    
+    private func configure(with model: CityWeatherInfoModel?) {
         guard let model = model else { return }
-        cityNameLabel.text = model.name
+        cityNameLabel.text = model.cityInfo.name
         weatherIconImageView.loadImage(index: model.weatherInfo.weather.first!.icon)
         weatherDescriptionLabel.text = model.weatherInfo.weather.first?.weatherDescription
         currentTempLabel.text = model.currentTemp
         sensoryTempLabel.text = model.sensoryTemp
         tempMinAndMaxLabel.text = model.minAndMaxTemp
         otherInfoLabel.text = model.otherInfo
+    }
+    
+    // MARK: - Selector
+    @objc private func refreshWeather(_ sender: UIBarButtonItem) {
+        guard let weatherModel = weatherModel else { return }
+
+        APICaller.shared.fetchCityWeatherInformation(with: weatherModel.cityInfo)
+            .sink { _ in
+                
+            } receiveValue: { [weak self] model in
+                self?.weatherModel = model
+            }
+
     }
 }
