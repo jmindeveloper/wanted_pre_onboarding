@@ -57,18 +57,22 @@ struct CityWeatherInfoModel {
     let weatherInfo: CityWeatherInfoEntity
     
     var currentTampAndHumidity: String {
-        return "기온: \(weatherInfo.main.temp) / 습도: \(weatherInfo.main.humidity)"
+        return "현재기온: \(weatherInfo.main.temp)℃ / 현재습도: \(weatherInfo.main.humidity)%"
     }
     
     var currentTemp: String {
-        return "\(weatherInfo.main.temp) / \(weatherInfo.main.feelsTemp)"
+        return "현재기온: \(weatherInfo.main.temp)℃"
+    }
+    
+    var sensoryTemp: String {
+        return "체감기온: \(weatherInfo.main.feelsTemp)℃"
     }
     
     var minAndMaxTemp: String {
-        return "min: \(weatherInfo.main.tempMin) / max: \(weatherInfo.main.tempMax)"
+        return "최저온도: \(weatherInfo.main.tempMin)℃ / 최고온도: \(weatherInfo.main.tempMax)℃"
     }
     
     var otherInfo: String {
-        return "습도: \(weatherInfo.main.humidity) / 기압: \(weatherInfo.main.pressure) / 풍속: \(weatherInfo.wind.speed)"
+        return "습도: \(weatherInfo.main.humidity)% / 기압: \(weatherInfo.main.pressure)hPa / 풍속: \(weatherInfo.wind.speed)m/s"
     }
 }

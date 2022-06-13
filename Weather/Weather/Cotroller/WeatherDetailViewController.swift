@@ -17,6 +17,7 @@ final class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var weatherIconImageView: UIImageView!
     @IBOutlet weak var weatherDescriptionLabel: UILabel!
     @IBOutlet weak var currentTempLabel: UILabel!
+    @IBOutlet weak var sensoryTempLabel: UILabel!
     @IBOutlet weak var tempMinAndMaxLabel: UILabel!
     @IBOutlet weak var otherInfoLabel: UILabel!
     
@@ -34,6 +35,7 @@ final class WeatherDetailViewController: UIViewController {
         weatherIconImageView.loadImage(index: model.weatherInfo.weather.first!.icon)
         weatherDescriptionLabel.text = model.weatherInfo.weather.first?.weatherDescription
         currentTempLabel.text = model.currentTemp
+        sensoryTempLabel.text = model.sensoryTemp
         tempMinAndMaxLabel.text = model.minAndMaxTemp
         otherInfoLabel.text = model.otherInfo
     }
