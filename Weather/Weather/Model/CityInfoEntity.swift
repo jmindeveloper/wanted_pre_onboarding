@@ -27,5 +27,5 @@ typealias CityInfoFetchResult = [CityInfoEntity]
 
 struct CityInfoModel {
     let name: String
-    let coordinator: Coordinates
+    let coordinator: Coordinator
 }

@@ -56,7 +56,7 @@ class AllWeatherViewController: UIViewController {
     
     // MARK: - Selector
     @objc private func refreshWeather(_ sender: UIRefreshControl) {
-        configureCombine()
+        viewModel.fetchAllCityWeatherInformations()
     }
 }
 

@@ -8,18 +8,18 @@
 import Foundation
 import Combine
 
-typealias Coordinates = (lat: Double, lon: Double)
+typealias Coordinator = (lat: Double, lon: Double)
 
 final class APICaller {
     static let shared = APICaller()
-    private let cityInfoBaseUrl = "http://api.openweathermap.org/geo/1.0/direct?q="
-    private let cityWeatherInfoBaseUrl = "https://api.openweathermap.org/data/2.5/weather?"
+    private let cityInfoBaseUrl = "http://api.openweathermap.org/geo/1.0/direct?limit=1"
+    private let cityWeatherInfoBaseUrl = "https://api.openweathermap.org/data/2.5/weather?lang=kr&units=metric"
     private let apiKey = "8d48a534e2b76a5b453fd949f1a0efa2"
     
     private init() { }
     
     private func fetchCityInformation(with cityName: String) -> AnyPublisher<CityInfoModel, Error> {
-        let urlString = cityInfoBaseUrl + "\(cityName)&limit=1&appid=\(apiKey)"
+        let urlString = cityInfoBaseUrl + "&q=\(cityName)&appid=\(apiKey)"
         let url = URL(string: urlString)!
         
         return URLSession.shared.dataTaskPublisher(for: url)
@@ -35,8 +35,8 @@ final class APICaller {
     }
     
     func fetchCityWeatherInformation(with city: CityInfoModel) -> AnyPublisher<CityWeatherInfoModel, Error> {
-        let coordinates: Coordinates = city.coordinator
-        let urlString = cityWeatherInfoBaseUrl + "lat=\(coordinates.lat)&lon=\(coordinates.lon)&appid=\(apiKey)&lang=kr&units=metric"
+        let coordinates: Coordinator = city.coordinator
+        let urlString = cityWeatherInfoBaseUrl + "&lat=\(coordinates.lat)&lon=\(coordinates.lon)&appid=\(apiKey)"
         let url = URL(string: urlString)!
         
         return URLSession.shared.dataTaskPublisher(for: url)

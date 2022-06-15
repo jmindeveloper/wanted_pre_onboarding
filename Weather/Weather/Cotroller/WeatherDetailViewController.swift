@@ -40,6 +40,7 @@ final class WeatherDetailViewController: UIViewController {
         super.viewDidLoad()
         configure(with: weatherModel)
         configureNavBar()
+        configureCombine()
         indicator.isHidden = true
     }
     
@@ -62,6 +63,16 @@ final class WeatherDetailViewController: UIViewController {
         otherInfoLabel.text = model.otherInfo
     }
     
+    private func configureCombine() {
+        weatherViewModel.fetchOneCityWeatherSuccess
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.weatherModel = self?.weatherViewModel.oneCityWeatherInfo
+                self?.configure(with: self?.weatherModel)
+                self?.refreshMode(isRefresh: false)
+            }.store(in: &subscriptions)
+    }
+    
     private func refreshMode(isRefresh: Bool) {
         uiStackView.isHidden = isRefresh ? true : false
         indicator.isHidden = isRefresh ? false : true
@@ -77,12 +88,5 @@ final class WeatherDetailViewController: UIViewController {
         guard let weatherModel = weatherModel else { return }
         refreshMode(isRefresh: true)
         weatherViewModel.refreshOneCityWeatherInformation(with: weatherModel.cityInfo)
-        weatherViewModel.fetchOneCityWeatherSuccess
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.weatherModel = self?.weatherViewModel.oneCityWeatherInfo
-                self?.configure(with: self?.weatherModel)
-                self?.refreshMode(isRefresh: false)
-            }.store(in: &subscriptions)
     }
 }
